@@ -1,32 +1,50 @@
+import { Button } from '@mui/material'
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
+import { Collatz } from './Pages/Collatz'
+import { CollatzResults } from './Pages/CollatzResults'
+import { InputMain } from './Pages/InputMain'
 
 function App (): JSX.Element {
-  const [count, setCount] = useState(1)
+  const [value, setValue] = useState(1)
+  const [results, setResults] = useState<number[]>([])
+
+  const handleSubmit = (): void => {
+    const result: number[] = Collatz(value)
+    setResults(result)
+  }
+
+  const reset = (): void => {
+    setValue(1)
+    setResults([])
+  }
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank" rel="noreferrer">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
+      <h1>Conjetura de Collatz</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <InputMain value={value} setValue={setValue} />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className='button-container'>
+        <Button
+          variant='contained'
+          disabled={value < 1}
+          onClick={handleSubmit}
+        >
+          Ejecutar
+        </Button>
+        <Button
+          variant='outlined'
+          onClick={reset}
+        >
+          Limpiar
+        </Button>
+
+      </div>
+      { results.length > 0
+        ? <CollatzResults data={results} />
+        : <></>
+      }
     </div>
   )
 }
